@@ -8,8 +8,8 @@ EMU = qemu-system-x86_64
 all: run
 
 # Assemble the boot sector
-$(OUTPUT): boot-sector.asm
-	$(ASM) $(ASM_FLAGS) -o $(OUTPUT) boot-sector.asm
+$(OUTPUT): main.asm
+	$(ASM) $(ASM_FLAGS) -o $(OUTPUT) main.asm
 
 # Run the boot sector using QEMU
 run: $(OUTPUT)
