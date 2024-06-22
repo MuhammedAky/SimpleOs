@@ -1,56 +1,42 @@
-org 0x7c00
-
 bits 16
 
-%define ENDL 0x0D, 0x0A
+org 0x7C00
 
 start:
-	jmp main
-
-
-puts:
-	push si
-	push ax
-	push bx
-
-.loop:
-	lodsb
-	or al,al
-	jz .done
-
-	mov ah, 0x0E
-	mov bh, 0
+	mov ax, 0x0003
 	int 0x10
 
-	jmp .loop
+	mov bx, 0x1000
+	mov dh, 2
+	mov dl, 0x80
+	call read_sectors
 
-.done:
+	jmp 0x1000:0000
+
+read_sectors:
+	push ax
+	push bx
+	push cx
+	push dx
+	push es
+	push di
+
+	mov ah, 0x02
+	mov al, dh
+	mov ch, 0
+	mov cl, 2
+	mov dh, 0
+	mov dl, 0x80
+	int 0x13
+
+	pop di
+	pop es
+	pop dx
+	pop cx
 	pop bx
 	pop ax
-	pop si
 	ret
-
-main:
-	mov ax,0
-	mov ds, ax
-	mov es,ax
-
-	mov ss, ax
-	mov sp, 0x7c00
-
-	mov si, msg
-	call puts
-
-	hlt
-
-.halt:
-	jmp .halt
-
-msg: db 'Hello World From OS', ENDL, 0
 
 times 510 - ($ - $$) db 0
 
 dw 0AA55h
-
-
-
